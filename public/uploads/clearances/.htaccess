@@ -1,0 +1,13 @@
+# Security Hardening for Clearance Attachments
+# Prevent directory listing and prevent execution of scripts in uploads
+Options -Indexes -ExecCGI
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|phps|inc|pl|cgi|py|sh|asp|aspx|jsp|phar|exe|cmd|bat)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Enforce download / nosniff on non-image types
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

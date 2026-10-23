@@ -1,0 +1,7 @@
+# Prevent direct directory listing and prevent execution of scripts in uploads
+Options -Indexes -ExecCGI
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|phps|inc|pl|cgi|py|sh|asp|aspx|jsp)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

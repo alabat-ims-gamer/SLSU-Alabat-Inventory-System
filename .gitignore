@@ -1,0 +1,26 @@
+# Environment Secrets
+.env
+.env.backup
+.env.local
+
+# Composer Dependencies
+/vendor/
+composer.phar
+
+# Uploaded Files & Temporary Assets
+/public/uploads/**
+!/public/uploads/
+!/public/uploads/**/
+!/public/uploads/**/.gitkeep
+!/public/uploads/**/.htaccess
+
+# IDE and Editor Files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
