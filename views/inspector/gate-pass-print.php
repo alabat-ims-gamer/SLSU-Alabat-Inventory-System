@@ -38,6 +38,12 @@ if (isset($_GET['format']) && strtolower(trim((string)$_GET['format'])) === 'pdf
     $dompdf->render();
 
     $cleanFilename = 'GatePass_' . preg_replace('/[^A-Za-z0-9_-]/', '', $passNo) . '.pdf';
+
+    // Clean any active output buffer to ensure clean binary stream
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $cleanFilename . '"');
     header('Cache-Control: private, max-age=0, must-revalidate');

@@ -386,12 +386,10 @@ async function submitGatePass() {
 
         if (resp.ok && result.status === 'success') {
             closeNewPassModal();
-            // Open print view in new tab
-            if (result.print_url) {
-                window.open(result.print_url, '_blank');
-            }
-            // Reload table or redirect
-            const targetUrl = window.appUrl ? window.appUrl('/inspector/gate-passes?success=' + encodeURIComponent(result.message)) : ('/inspector/gate-passes?success=' + encodeURIComponent(result.message));
+            // Redirect to gate-passes with open_print param to trigger direct PDF download
+            const passId = result.gate_pass_id || '';
+            const printParam = passId ? ('&open_print=' + encodeURIComponent(passId)) : '';
+            const targetUrl = (window.appUrl ? window.appUrl('/inspector/gate-passes') : '/inspector/gate-passes') + '?success=' + encodeURIComponent(result.message) + printParam;
             window.location.href = targetUrl;
         } else {
             showFeedback('error', result.message || 'Failed to issue Gate Pass.');

@@ -49,10 +49,10 @@ require __DIR__ . '/../layouts/shell.php';
 <!-- ── Global Scope & Reporting Toolbar ──────────────────── -->
 <div class="analytics-toolbar animate-fade-in-up">
   <!-- Scope Filter Controls -->
-  <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-    <span style="font-size:12px;font-weight:500;color:var(--color-ink-mute);text-transform:uppercase;letter-spacing:0.5px;">Filter Scope:</span>
-    <div>
-      <select id="filter-category" class="form-input" style="height:34px;font-size:12px;padding:4px 10px;border-radius:var(--radius-pill);background:var(--color-canvas);">
+  <div class="analytics-filter-scope-wrap" style="display:flex;align-items:center;gap:.75rem;flex:1;min-width:240px;">
+    <span style="font-size:12px;font-weight:600;color:var(--color-ink-mute);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Filter Scope:</span>
+    <div style="flex:1;min-width:180px;">
+      <select id="filter-category" class="form-input" style="width:100%;height:36px;font-size:13px;padding:4px 12px;border-radius:var(--radius-pill);background:var(--color-canvas);cursor:pointer;">
         <option value="">All Asset Categories</option>
         <?php foreach ($categoriesList as $cat): ?>
           <option value="<?= htmlspecialchars((string)$cat, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string)$cat, ENT_QUOTES, 'UTF-8') ?></option>
@@ -62,8 +62,8 @@ require __DIR__ . '/../layouts/shell.php';
   </div>
 
   <!-- Action Buttons -->
-  <div style="display:flex;align-items:center;gap:.5rem;">
-    <button type="button" id="btn-open-report-configurator" data-modal-open="modal-report-configurator" class="btn btn-secondary btn-sm" style="border-radius:var(--radius-pill);font-size:12px;padding:6px 12px;" title="Configure and generate printable institutional report">
+  <div class="analytics-toolbar-actions" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+    <button type="button" id="btn-open-report-configurator" data-modal-open="modal-report-configurator" class="btn btn-secondary btn-sm" style="border-radius:var(--radius-pill);font-size:12px;padding:6px 14px;" title="Configure and generate printable institutional report">
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
       Print Briefing
     </button>
@@ -894,11 +894,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const startDate = document.getElementById('rpt-start-date') ? document.getElementById('rpt-start-date').value : '';
       const endDate = document.getElementById('rpt-end-date') ? document.getElementById('rpt-end-date').value : '';
 
-      // Mode 1: Official Institutional Audit Report (1-to-1 PDF/Print)
+      // Mode 1: Official Institutional Audit Report (Direct PDF Download)
       if (selectedFormat === 'official') {
         const query = new URLSearchParams({
           timeframe: tf,
           category: cat,
+          format: 'pdf',
         });
 
         if (tf === 'custom') {
@@ -907,7 +908,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const targetUrl = (window.appUrl ? window.appUrl('/api/analytics/institutional-report') : '/api/analytics/institutional-report') + '?' + query.toString();
-        window.open(targetUrl, '_blank');
+        
+        if (typeof Toast !== 'undefined' && typeof Toast.info === 'function') {
+          Toast.info('Preparing Document', 'Compiling institutional PDF audit report. Your download will start momentarily...');
+        } else if (typeof Toast !== 'undefined' && typeof Toast.show === 'function') {
+          Toast.show('Preparing Document', 'Compiling institutional PDF audit report...', { type: 'info' });
+        }
+
+        window.location.assign(targetUrl);
         closeReportModal();
         return;
       }

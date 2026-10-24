@@ -26,7 +26,7 @@ $totalItemsSum = 0;
 foreach ($passes as $p) {
     $totalValuationSum += (float)($p['total_valuation'] ?? 0.0);
     $totalItemsSum += (int)($p['item_count'] ?? 0);
-    $printUrl = url('/inspector/gate-passes/print?id=' . $p['id']);
+    $printUrl = url('/inspector/gate-passes/print?id=' . $p['id'] . '&format=pdf');
 
     $tableRows[] = [
         'gate_pass_no' => '
@@ -47,9 +47,9 @@ foreach ($passes as $p) {
         'created_at' => '
             <span style="font-size:12px;color:var(--color-ink-mute);">' . date('M d, Y h:i A', strtotime($p['created_at'])) . '</span>',
         'actions' => '
-            <a href="' . htmlspecialchars($printUrl, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;text-decoration:none;">
+            <a href="' . htmlspecialchars($printUrl, ENT_QUOTES, 'UTF-8') . '" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;text-decoration:none;" title="Export Gate Pass (PDF)">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                <span>Print Official PDF</span>
+                <span>Export PDF</span>
             </a>'
     ];
 }
@@ -87,7 +87,7 @@ foreach ($passes as $p) {
     </div>
 
     <!-- Metric Overview Cards -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:1rem;margin-bottom:1.5rem;">
+    <div class="grid-kpi-stats stagger-children">
         <?php component('stat-card', [
             'title'    => 'Total Permits Issued',
             'value'    => $total,
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const printId = params.get('open_print');
     if (printId) {
-        window.open(window.appUrl('/inspector/gate-passes/print?id=' + encodeURIComponent(printId)), '_blank');
+        window.location.assign(window.appUrl('/inspector/gate-passes/print?id=' + encodeURIComponent(printId) + '&format=pdf'));
     }
     const prefilledBarcode = params.get('barcode');
     if (prefilledBarcode) {

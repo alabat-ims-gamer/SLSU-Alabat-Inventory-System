@@ -416,34 +416,40 @@ require __DIR__ . '/../layouts/shell.php';
 
       <!-- Recent Personal Activity Table -->
       <div style="margin-bottom:2.5rem;">
-        <h4 style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:0.75rem;">Recent Security Activity</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+          <h4 style="font-size:14px;font-weight:600;color:var(--color-ink);margin:0;">Recent Security Activity</h4>
+          <div class="table-scroll-hint">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            Scroll horizontally to view
+          </div>
+        </div>
         
         <?php if (empty($personalLogs)): ?>
           <div style="padding:2rem 1rem;text-align:center;color:var(--color-ink-mute);background:var(--color-canvas-soft);border-radius:var(--radius-md);border:1px dashed var(--color-hairline);font-size:13px;">
             No recent activity recorded.
           </div>
         <?php else: ?>
-          <div class="table-responsive" style="border:1px solid var(--color-hairline);border-radius:var(--radius-md);overflow:hidden;">
-            <table class="table" style="min-width:600px;margin-bottom:0;">
+          <div class="table-responsive" style="border:1px solid var(--color-hairline);border-radius:var(--radius-md);overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table class="table" style="min-width:600px;margin-bottom:0;width:100%;">
               <thead>
                 <tr style="background:var(--color-canvas-soft);border-bottom:1px solid var(--color-hairline);text-align:left;font-size:12px;color:var(--color-ink-mute);">
-                  <th style="padding:.75rem;">Event Type</th>
+                  <th style="padding:.75rem;white-space:nowrap;">Event Type</th>
                   <th style="padding:.75rem;">Description</th>
-                  <th style="padding:.75rem;">IP Address</th>
-                  <th style="padding:.75rem;text-align:right;">Date & Time</th>
+                  <th style="padding:.75rem;white-space:nowrap;">IP Address</th>
+                  <th style="padding:.75rem;text-align:right;white-space:nowrap;">Date & Time</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($personalLogs as $log): ?>
                 <tr style="border-bottom:1px solid var(--color-canvas-soft);font-size:13px;">
-                  <td style="padding:.75rem;">
+                  <td style="padding:.75rem;white-space:nowrap;">
                     <span class="badge" style="background:var(--color-canvas-soft);color:var(--color-ink);font-size:11px;font-weight:500;">
                       <?= htmlspecialchars($log['action_type'], ENT_QUOTES, 'UTF-8') ?>
                     </span>
                   </td>
                   <td style="padding:.75rem;color:var(--color-ink);"><?= htmlspecialchars($log['description'], ENT_QUOTES, 'UTF-8') ?></td>
-                  <td style="padding:.75rem;font-size:12px;color:var(--color-ink-mute);font-feature-settings:'tnum';"><?= htmlspecialchars($log['ip_address'], ENT_QUOTES, 'UTF-8') ?></td>
-                  <td style="padding:.75rem;text-align:right;font-size:12px;color:var(--color-ink-mute);font-feature-settings:'tnum';">
+                  <td style="padding:.75rem;font-size:12px;color:var(--color-ink-mute);font-feature-settings:'tnum';white-space:nowrap;"><?= htmlspecialchars($log['ip_address'], ENT_QUOTES, 'UTF-8') ?></td>
+                  <td style="padding:.75rem;text-align:right;font-size:12px;color:var(--color-ink-mute);font-feature-settings:'tnum';white-space:nowrap;">
                     <?= date('M d, Y h:i A', strtotime($log['created_at'])) ?>
                   </td>
                 </tr>

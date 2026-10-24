@@ -50,7 +50,7 @@ require __DIR__ . '/../layouts/shell.php';
 </div>
 
 <!-- ── Metric Cards ───────────────────────────────────────── -->
-<div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:var(--space-md);margin-bottom:var(--space-xl);">
+<div class="grid-kpi-stats stagger-children">
   <?php
   $props = [
     'title'    => 'Needs Verification',
@@ -94,29 +94,29 @@ require __DIR__ . '/../layouts/shell.php';
 <div class="data-table-wrap" id="incidents-console-wrap" style="background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;">
 
   <!-- Toolbar & Filters -->
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);padding:var(--space-md) var(--space-lg);border-bottom:1px solid var(--color-hairline);background:var(--color-canvas-soft);">
+  <div class="incidents-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);padding:var(--space-md) var(--space-lg);border-bottom:1px solid var(--color-hairline);background:var(--color-canvas-soft);">
     
     <!-- Status Filter Tabs -->
-    <div style="display:flex;align-items:center;gap:var(--space-xs);flex-wrap:wrap;">
-      <button type="button" class="tab-btn" data-status="pending_verification" style="padding:6px 14px;font-size:12px;font-weight:600;border-radius:20px;border:1px solid var(--color-hairline);background:var(--color-canvas);color:var(--color-ink-secondary);cursor:pointer;transition:all var(--transition-fast);">
+    <div class="incident-status-tabs">
+      <button type="button" class="tab-btn" data-status="pending_verification">
         Needs Verification <span id="cnt-pending" style="margin-left:4px;color:var(--color-gold-deep);font-feature-settings:'tnum';">(<?= (int)($pendingVerifCount ?? 0) ?>)</span>
       </button>
-      <button type="button" class="tab-btn" data-status="partially_paid" style="padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--color-hairline);background:var(--color-canvas);color:var(--color-ink-secondary);cursor:pointer;transition:all var(--transition-fast);">
+      <button type="button" class="tab-btn" data-status="partially_paid">
         Partially Paid <span id="cnt-partially-paid" style="margin-left:4px;color:var(--color-gold-deep);font-feature-settings:'tnum';">(<?= (int)($partiallyPaidCount ?? 0) ?>)</span>
       </button>
-      <button type="button" class="tab-btn" data-status="awaiting_payment" style="padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--color-hairline);background:var(--color-canvas);color:var(--color-ink-secondary);cursor:pointer;transition:all var(--transition-fast);">
+      <button type="button" class="tab-btn" data-status="awaiting_payment">
         Awaiting Payment <span id="cnt-awaiting" style="margin-left:4px;color:var(--color-ruby);font-feature-settings:'tnum';">(<?= (int)($awaitingPayCount ?? 0) ?>)</span>
       </button>
-      <button type="button" class="tab-btn" data-status="cleared" style="padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--color-hairline);background:var(--color-canvas);color:var(--color-ink-secondary);cursor:pointer;transition:all var(--transition-fast);">
+      <button type="button" class="tab-btn" data-status="cleared">
         Cleared Records <span id="cnt-cleared" style="margin-left:4px;color:var(--color-emerald, #059669);font-feature-settings:'tnum';">(<?= (int)($clearedCount ?? 0) ?>)</span>
       </button>
-      <button type="button" class="tab-btn active" data-status="" style="padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--color-primary);background:var(--color-primary);color:#ffffff;cursor:pointer;transition:all var(--transition-fast);">
+      <button type="button" class="tab-btn active" data-status="">
         All Incidents <span id="cnt-all" style="margin-left:4px;opacity:0.85;font-feature-settings:'tnum';">(<?= (int)($totalCount ?? 0) ?>)</span>
       </button>
     </div>
 
     <!-- Search Box -->
-    <div style="position:relative;display:flex;align-items:center;min-width:260px;">
+    <div class="incident-search-wrap" style="position:relative;display:flex;align-items:center;min-width:260px;">
       <input 
         type="text" 
         id="incident-search-input" 
@@ -131,6 +131,73 @@ require __DIR__ . '/../layouts/shell.php';
   </div>
 
   <style>
+    /* Category Filter Tabs Responsiveness */
+    .incident-status-tabs {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .incident-status-tabs .tab-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-hairline);
+      background: var(--color-canvas);
+      color: var(--color-ink-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .incident-status-tabs .tab-btn:hover {
+      background: var(--color-canvas-soft);
+      border-color: var(--color-primary);
+    }
+    .incident-status-tabs .tab-btn.active {
+      background: var(--color-primary) !important;
+      color: #ffffff !important;
+      border-color: var(--color-primary) !important;
+    }
+    .incident-status-tabs .tab-btn.active span {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    @media (max-width: 768px) {
+      .incidents-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: var(--space-md) !important;
+      }
+      .incident-status-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+      .incident-status-tabs .tab-btn {
+        width: 100% !important;
+        min-height: 38px !important;
+        padding: 8px 10px !important;
+        font-size: 11.5px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+      .incident-status-tabs .tab-btn:last-child {
+        grid-column: span 2 !important;
+      }
+      .incident-search-wrap {
+        width: 100% !important;
+        min-width: 100% !important;
+      }
+    }
+
     /* Strict Column Isolation & Text Wrap (Prevents global .data-table nowrap bleed) */
     .incidents-table {
       width: 100% !important;
@@ -579,14 +646,14 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => {
         b.classList.remove('active');
-        b.style.background = 'var(--color-canvas)';
-        b.style.color = 'var(--color-ink-secondary)';
-        b.style.borderColor = 'var(--color-hairline)';
+        b.style.background = '';
+        b.style.color = '';
+        b.style.borderColor = '';
       });
       btn.classList.add('active');
-      btn.style.background = 'var(--color-primary)';
-      btn.style.color = '#ffffff';
-      btn.style.borderColor = 'var(--color-primary)';
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
 
       currentIncidentStatus = btn.dataset.status;
       currentIncidentPage = 1;

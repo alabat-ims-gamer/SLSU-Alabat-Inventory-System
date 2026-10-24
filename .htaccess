@@ -1,10 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Prevent direct browser access to sensitive backend directories and files
-    RewriteRule ^(app|config|database|views|vendor|\.env|\.env\.example|composer\.json|composer\.lock) - [F,L,NC]
+    # Security Headers
+    <IfModule mod_headers.c>
+        Header set X-Content-Type-Options "nosniff"
+        Header set X-Frame-Options "SAMEORIGIN"
+        Header set X-XSS-Protection "1; mode=block"
+    </IfModule>
 
-    # Route all traffic to the public directory
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+    # Pass all existing files, folders, or symlinks directly
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L,QSA]
 </IfModule>

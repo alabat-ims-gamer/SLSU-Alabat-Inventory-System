@@ -37,6 +37,11 @@ if (isset($_GET['format']) && strtolower(trim((string)$_GET['format'])) === 'pdf
     $dompdf->loadHtml($documentHtml);
     $dompdf->render();
 
+    // Clean any active output buffer to ensure clean binary stream
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $pdfFilename . '"');
     header('Cache-Control: private, max-age=0, must-revalidate');

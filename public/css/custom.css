@@ -2474,12 +2474,6 @@ h1.section-title ~ .section-subtitle,
     gap: var(--space-md);
   }
 }
-@media (max-width: 580px) {
-  .grid-kpi-stats {
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
-  }
-}
 
 /* Balanced 3-Column KPI Stat Grid (Perfect for 6 cards in 3x2, or 3 cards in 3x1) */
 .grid-kpi-stats-3col,
@@ -2494,13 +2488,6 @@ h1.section-title ~ .section-subtitle,
   .grid-kpi-stats-3col,
   .grid-kpi-stats-6 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-md);
-  }
-}
-@media (max-width: 580px) {
-  .grid-kpi-stats-3col,
-  .grid-kpi-stats-6 {
-    grid-template-columns: 1fr;
     gap: var(--space-md);
   }
 }
@@ -2683,15 +2670,37 @@ h1.section-title ~ .section-subtitle,
 }
 
 /* Stat Card Content Scaling on Small Viewports */
-@media (max-width: 639px) {
+@media (max-width: 640px) {
   .stat-card {
-    padding: var(--space-lg);
-  }
-  .stat-card-value {
-    font-size: 24px;
+    padding: 12px !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
   }
   .stat-card-label {
-    font-size: 11px;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+  }
+  .stat-card-icon {
+    width: 30px !important;
+    height: 30px !important;
+    flex-shrink: 0 !important;
+  }
+  .stat-card-icon svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .stat-card-value {
+    font-size: 22px !important;
+    line-height: 1.15 !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  .stat-card-trend {
+    font-size: 10.5px !important;
+    padding: 2px 6px !important;
+    white-space: normal !important;
+  }
+  .stat-card-subtext {
+    font-size: 10.5px !important;
   }
 }
 
@@ -2929,6 +2938,11 @@ h1.section-title ~ .section-subtitle,
   .card-responsive-body {
     padding: 1rem !important;
   }
+
+  .override-pw-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
 }
 
 @media (min-width: 640px) {
@@ -2955,22 +2969,77 @@ h1.section-title ~ .section-subtitle,
 }
 
 /* ── 29. KPI Stat Cards & Responsive Grid ─────────────────── */
-.grid-kpi-stats {
+.grid-kpi-stats,
+.stats-grid,
+.grid-kpi-stats-6,
+.grid-kpi-stats-3col,
+.inspector-kpi-grid,
+.records-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
+  min-width: 0;
 }
 
-@media (max-width: 1024px) {
+.grid-kpi-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-kpi-stats-3col,
+.grid-kpi-stats-6 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats-grid,
+.inspector-kpi-grid,
+.records-stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+@media (max-width: 1100px) {
   .grid-kpi-stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+  .grid-kpi-stats-3col,
+  .grid-kpi-stats-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
   }
 }
 
-@media (max-width: 640px) {
-  .grid-kpi-stats {
-    grid-template-columns: 1fr;
+/* 2-Column Grid on Mobile (360px - 640px) */
+@media (max-width: 640px) and (min-width: 360px) {
+  .grid-kpi-stats,
+  .stats-grid,
+  .grid-kpi-stats-6,
+  .grid-kpi-stats-3col,
+  .inspector-kpi-grid,
+  .records-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Odd-Numbered Last Card Full Width Spanning */
+  :is(.grid-kpi-stats, .stats-grid, .grid-kpi-stats-6, .grid-kpi-stats-3col, .inspector-kpi-grid, .records-stats-grid)
+    > :is(.stat-card, .card, a.stat-card, a.card):last-child:nth-child(odd) {
+    grid-column: span 2 !important;
+  }
+}
+
+/* Ultra-Narrow Screen Fallback (< 360px) */
+@media (max-width: 359px) {
+  .grid-kpi-stats,
+  .stats-grid,
+  .grid-kpi-stats-6,
+  .grid-kpi-stats-3col,
+  .inspector-kpi-grid,
+  .records-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  :is(.grid-kpi-stats, .stats-grid, .grid-kpi-stats-6, .grid-kpi-stats-3col, .inspector-kpi-grid, .records-stats-grid)
+    > :is(.stat-card, .card, a.stat-card, a.card):last-child:nth-child(odd) {
+    grid-column: span 1 !important;
   }
 }
 
@@ -3359,6 +3428,19 @@ h1.section-title ~ .section-subtitle,
   .analytics-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-md);
+  }
+  .analytics-filter-scope-wrap {
+    width: 100% !important;
+  }
+  .analytics-toolbar-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .analytics-toolbar-actions .btn {
+    flex: 1;
+    justify-content: center;
   }
 }
 

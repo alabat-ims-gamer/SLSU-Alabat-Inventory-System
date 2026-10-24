@@ -18,8 +18,8 @@ require dirname(__DIR__) . '/layouts/shell.php';
       <span><?= htmlspecialchars($_GET['success'], ENT_QUOTES, 'UTF-8') ?></span>
     </div>
     <?php if (!empty($_GET['open_print'])): ?>
-      <a href="<?= url('/inspector/iar/print?id=' . (int)$_GET['open_print']) ?>" target="_blank" class="btn btn-sm btn-primary" style="border-radius:9999px;padding:4px 12px;font-size:12px;text-decoration:none;">
-        Print IAR Form AFA-SAF-1.016
+      <a href="<?= url('/inspector/iar/print?id=' . (int)$_GET['open_print'] . '&format=pdf') ?>" class="btn btn-sm btn-primary" style="border-radius:9999px;padding:4px 12px;font-size:12px;text-decoration:none;">
+        Download Official Form AFA-SAF-1.016 (PDF)
       </a>
     <?php endif; ?>
   </div>
@@ -54,7 +54,7 @@ require dirname(__DIR__) . '/layouts/shell.php';
 </div>
 
 <!-- ── KPI Stat Cards ──────────────────────────────────────── -->
-<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:1rem;margin-bottom:1.5rem;">
+<div class="grid-kpi-stats stagger-children">
   <?php
   $statCards = [
     [
@@ -222,9 +222,9 @@ require dirname(__DIR__) . '/layouts/shell.php';
               </td>
               <td style="padding:14px 18px;text-align:right;">
                 <div style="display:inline-flex;gap:6px;align-items:center;">
-                  <a href="<?= url('/inspector/iar/print?id=' . $r['id']) ?>" target="_blank" class="btn btn-sm" title="Print Official Form AFA-SAF-1.016" style="display:inline-flex;align-items:center;gap:4px;border-radius:9999px;padding:4px 10px;background:var(--color-canvas-soft,#f2f7f4);border:1px solid var(--color-hairline,rgba(22,101,52,0.12));color:var(--color-primary,#166534);text-decoration:none;font-size:12px;">
+                  <a href="<?= url('/inspector/iar/print?id=' . $r['id'] . '&format=pdf') ?>" class="btn btn-sm" title="Export Official Form AFA-SAF-1.016 (PDF)" style="display:inline-flex;align-items:center;gap:4px;border-radius:9999px;padding:4px 10px;background:var(--color-canvas-soft,#f2f7f4);border:1px solid var(--color-hairline,rgba(22,101,52,0.12));color:var(--color-primary,#166534);text-decoration:none;font-size:12px;">
                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                    Print
+                    Export PDF
                   </a>
 
                   <?php if ($r['status'] === 'PENDING_SIGNATURES'): ?>

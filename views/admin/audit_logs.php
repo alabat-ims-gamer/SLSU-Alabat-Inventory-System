@@ -22,7 +22,7 @@ require_once __DIR__ . '/../layouts/shell.php';
 </div>
 
 <!-- ─── Metric KPI Grid ───────────────────────────────────────── -->
-<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:1rem;margin-bottom:1.5rem;">
+<div class="grid-kpi-stats stagger-children">
   <!-- Total Records -->
   <div class="card" style="padding:1.25rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">

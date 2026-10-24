@@ -35,7 +35,7 @@ require __DIR__ . '/../layouts/shell.php';
 </div>
 
 <!-- ── Summary Metric Strip ───────────────────────────────── -->
-<div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:var(--space-md);margin-bottom:var(--space-xl);">
+<div class="grid-kpi-stats stagger-children">
   <?php
   $props = [
     'title'    => 'Total Remaining Balance',

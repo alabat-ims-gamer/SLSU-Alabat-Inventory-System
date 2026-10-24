@@ -33,7 +33,7 @@ require __DIR__ . '/../layouts/shell.php';
 </div>
 
 <!-- ── Summary Metric Strip ───────────────────────────────── -->
-<div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:var(--space-md);margin-bottom:var(--space-xl);">
+<div class="grid-kpi-stats stagger-children">
   <?php
   $props = ['title' => 'Lifetime Borrows', 'value' => $stats['total_borrowed'], 'icon' => 'clipboard-list', 'color' => 'indigo', 'subtitle' => 'Total transactions recorded'];
   require __DIR__ . '/../components/stat-card.php';
@@ -52,11 +52,206 @@ require __DIR__ . '/../layouts/shell.php';
 <!-- ── Ledger Table & Control Panel ───────────────────────── -->
 <div class="data-table-wrap" id="records-ledger-wrap">
 
+  <style>
+    /* Records Control Toolbar */
+    .records-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--color-hairline);
+      background: var(--color-canvas-soft);
+    }
+
+    /* Status Filter Tabs (Pills) */
+    .records-status-tabs {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .records-tab-btn {
+      text-decoration: none;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-hairline);
+      background: var(--color-canvas);
+      color: var(--color-ink-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+    .records-tab-btn .tab-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-ink-mute);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .records-tab-btn:hover {
+      background: var(--color-canvas-soft);
+      border-color: var(--color-primary);
+      color: var(--color-ink);
+    }
+    .records-tab-btn.active {
+      background: var(--color-primary) !important;
+      border-color: var(--color-primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 1px 3px rgba(22, 101, 52, 0.25);
+    }
+    .records-tab-btn.active .tab-dot {
+      background: #ffffff !important;
+    }
+    .records-tab-btn .tab-count {
+      font-size: 11px;
+      opacity: 0.85;
+      font-feature-settings: 'tnum';
+    }
+
+    /* Search & Period Filter Form */
+    .records-filter-form {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: nowrap;
+      margin: 0;
+    }
+    .records-period-select {
+      width: auto;
+      font-size: 13px;
+      padding: 6px 12px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--color-canvas);
+      cursor: pointer;
+    }
+    .records-search-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .records-search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .records-search-input-wrap input {
+      padding-left: 32px;
+      font-size: 13px;
+      height: 36px;
+      min-width: 200px;
+      border-radius: var(--radius-md);
+      background: var(--color-canvas);
+    }
+    .records-search-icon {
+      position: absolute;
+      left: 10px;
+      color: var(--color-ink-mute);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+    .records-filter-btn {
+      height: 36px;
+      padding: 0 14px;
+      white-space: nowrap;
+    }
+    .records-reset-btn {
+      height: 36px;
+      padding: 0 10px;
+      font-size: 12px;
+      color: var(--color-ink-mute);
+      white-space: nowrap;
+    }
+
+    /* Mobile Proportioned & Balanced Layout */
+    @media (max-width: 768px) {
+      .records-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 12px 14px !important;
+      }
+      
+      /* 2x2 Perfectly Symmetrical Grid for Status Tabs */
+      .records-status-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+      .records-tab-btn {
+        width: 100% !important;
+        min-height: 38px !important;
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+
+      /* Filter Form Stacks Proportionately with Full Widths */
+      .records-filter-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+      .records-period-wrap {
+        width: 100% !important;
+      }
+      .records-period-select {
+        width: 100% !important;
+        height: 38px !important;
+        font-size: 13px !important;
+      }
+      .records-search-row {
+        width: 100% !important;
+        display: flex !important;
+        gap: 8px !important;
+      }
+      .records-search-input-wrap {
+        flex: 1 !important;
+        min-width: 0 !important;
+        width: auto !important;
+      }
+      .records-search-input-wrap input {
+        width: 100% !important;
+        height: 38px !important;
+        min-width: 0 !important;
+        font-size: 13px !important;
+      }
+      .records-filter-btn {
+        height: 38px !important;
+        padding: 0 16px !important;
+        font-size: 13px !important;
+        flex-shrink: 0 !important;
+      }
+      .records-reset-btn {
+        height: 38px !important;
+        padding: 0 10px !important;
+        font-size: 12px !important;
+        flex-shrink: 0 !important;
+      }
+    }
+  </style>
+
   <!-- Toolbar & Filters -->
-  <div class="data-table-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);padding:var(--space-md) var(--space-lg);border-bottom:1px solid var(--color-hairline);">
+  <div class="records-toolbar data-table-toolbar">
     
     <!-- Status Filter Tabs (Pills) -->
-    <div style="display:flex;align-items:center;gap:var(--space-xs);flex-wrap:wrap;">
+    <div class="records-status-tabs">
       <?php
       $tabDefs = [
         'all'      => ['label' => 'All Records', 'count' => $stats['total_borrowed']],
@@ -73,54 +268,65 @@ require __DIR__ . '/../layouts/shell.php';
           'period' => $period,
           'page'   => 1
         ]);
+        $dotColor = $isActiveTab ? '#ffffff' : ($tabKey === 'overdue' ? 'var(--color-ruby)' : ($tabKey === 'active' ? '#2563eb' : ($tabKey === 'returned' ? '#059669' : 'var(--color-ink-mute)')));
       ?>
         <a href="<?= htmlspecialchars($tabUrl, ENT_QUOTES, 'UTF-8') ?>" 
-           class="badge <?= $isActiveTab ? 'badge-approved' : 'badge-suspended' ?>" 
-           style="text-decoration:none;padding:6px 12px;font-size:12px;cursor:pointer;transition:all var(--transition-fast);border:1px solid <?= $isActiveTab ? 'var(--color-primary)' : 'var(--color-hairline)' ?>;background:<?= $isActiveTab ? 'var(--color-primary)' : 'var(--color-canvas)' ?>;color:<?= $isActiveTab ? '#ffffff' : 'var(--color-ink-secondary)' ?>;">
-          <?= htmlspecialchars($tab['label'], ENT_QUOTES, 'UTF-8') ?>
-          <span style="margin-left:4px;opacity:0.85;font-feature-settings:'tnum';font-size:11px;">(<?= $tab['count'] ?>)</span>
+           class="records-tab-btn <?= $isActiveTab ? 'active' : '' ?>">
+          <span class="tab-dot" style="background:<?= $dotColor ?>;"></span>
+          <span><?= htmlspecialchars($tab['label'], ENT_QUOTES, 'UTF-8') ?></span>
+          <span class="tab-count">(<?= $tab['count'] ?>)</span>
         </a>
       <?php endforeach; ?>
     </div>
 
     <!-- Search & Period Filter Form -->
-    <form method="GET" action="<?= url('/records') ?>" style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin:0;">
+    <form method="GET" action="<?= url('/records') ?>" class="records-filter-form">
       <input type="hidden" name="status" value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>">
       
       <!-- Period Selector -->
-      <select name="period" class="form-input" style="width:auto;font-size:13px;padding:6px 10px;height:36px;border-radius:var(--radius-md);" onchange="this.form.submit()">
-        <option value="all" <?= $period === 'all' ? 'selected' : '' ?>>All Time</option>
-        <option value="30days" <?= $period === '30days' ? 'selected' : '' ?>>Last 30 Days</option>
-        <option value="semester" <?= $period === 'semester' ? 'selected' : '' ?>>This Semester (120 Days)</option>
-        <option value="year" <?= $period === 'year' ? 'selected' : '' ?>>Past Year</option>
-      </select>
-
-      <!-- Search Box -->
-      <div style="position:relative;display:flex;align-items:center;">
-        <input 
-          type="text" 
-          name="q" 
-          class="form-input" 
-          placeholder="Search by item, barcode..." 
-          value="<?= htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8') ?>"
-          style="padding-left:32px;font-size:13px;height:36px;min-width:200px;border-radius:var(--radius-md);"
-        >
-        <span style="position:absolute;left:10px;color:var(--color-ink-mute);pointer-events:none;display:flex;align-items:center;">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </span>
+      <div class="records-period-wrap">
+        <select name="period" class="form-input records-period-select" onchange="this.form.submit()">
+          <option value="all" <?= $period === 'all' ? 'selected' : '' ?>>All Time</option>
+          <option value="30days" <?= $period === '30days' ? 'selected' : '' ?>>Last 30 Days</option>
+          <option value="semester" <?= $period === 'semester' ? 'selected' : '' ?>>This Semester (120 Days)</option>
+          <option value="year" <?= $period === 'year' ? 'selected' : '' ?>>Past Year</option>
+        </select>
       </div>
 
-      <button type="submit" class="btn btn-secondary btn-sm" style="height:36px;padding:0 12px;">Filter</button>
-      
-      <?php if ($searchQuery !== '' || $period !== 'all' || $status !== 'all'): ?>
-        <a href="<?= url('/records') ?>" class="btn btn-ghost btn-sm" style="height:36px;padding:0 8px;font-size:12px;color:var(--color-ink-mute);" title="Reset all filters">Reset</a>
-      <?php endif; ?>
+      <!-- Search Box & Actions Row -->
+      <div class="records-search-row">
+        <div class="records-search-input-wrap">
+          <input 
+            type="text" 
+            name="q" 
+            class="form-input" 
+            placeholder="Search by item, barcode..." 
+            value="<?= htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8') ?>"
+          >
+          <span class="records-search-icon">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
+        </div>
+
+        <button type="submit" class="btn btn-secondary btn-sm records-filter-btn">Filter</button>
+        
+        <?php if ($searchQuery !== '' || $period !== 'all' || $status !== 'all'): ?>
+          <a href="<?= url('/records') ?>" class="btn btn-ghost btn-sm records-reset-btn" title="Reset all filters">Reset</a>
+        <?php endif; ?>
+      </div>
     </form>
 
   </div>
 
+  <div style="padding:0 var(--space-lg);display:flex;justify-content:flex-end;">
+    <div class="table-scroll-hint" style="margin-top:8px;">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      Scroll horizontally to view
+    </div>
+  </div>
+
   <!-- Table Body -->
-  <div class="data-table-body" style="overflow-x:auto;">
+  <div class="data-table-body" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
     <?php if (empty($records)): ?>
       <!-- Empty State -->
       <div class="empty-state" style="padding:var(--space-xxl) var(--space-lg);text-align:center;">
@@ -144,7 +350,7 @@ require __DIR__ . '/../layouts/shell.php';
       </div>
 
     <?php else: ?>
-      <table class="data-table" role="grid" style="width:100%;border-collapse:collapse;">
+      <table class="data-table" role="grid" style="width:100%;min-width:760px;border-collapse:collapse;">
         <thead>
           <tr style="background:var(--color-canvas-soft);border-bottom:1px solid var(--color-hairline);">
             <th scope="col" style="padding:12px 16px;text-align:left;font-size:12px;font-weight:500;color:var(--color-ink-mute);text-transform:uppercase;letter-spacing:0.5px;">Asset Details</th>

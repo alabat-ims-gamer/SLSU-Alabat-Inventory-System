@@ -361,14 +361,19 @@ require __DIR__ . '/../layouts/shell.php';
         </div>
 
         <!-- Password Override -->
-        <form method="POST" action="<?= url('/admin/users/password-override') ?>" data-confirm="Are you sure you want to forcibly override this user's password?" data-confirm-title="Override User Password" data-confirm-btn="Override Password" data-confirm-destructive="false" style="margin-bottom:1rem;">
+        <form method="POST" action="<?= url('/admin/users/password-override') ?>" data-confirm="Are you sure you want to forcibly override this user's password?" data-confirm-title="Override User Password" data-confirm-btn="Override Password" data-confirm-destructive="false" style="margin-bottom:1.25rem;">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
           <input type="hidden" name="user_id" id="pw_user_id">
           
-          <label class="form-label" style="font-size:11px;color:var(--color-ink-mute);margin-bottom:4px;display:block;">Forced Password Reset</label>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            <input type="password" name="new_password" class="form-input" style="flex:1;" placeholder="New password (min 8 chars)" required minlength="8">
-            <button type="submit" class="btn btn-secondary btn-sm" style="white-space:nowrap;">Override Password</button>
+          <div class="form-group" style="margin-bottom:0.75rem;">
+            <label class="form-label" for="pw_override_input" style="font-size:11px;color:var(--color-ink-mute);margin-bottom:4px;display:block;">Forced Password Reset</label>
+            <input type="password" name="new_password" id="pw_override_input" class="form-input" style="width:100%;" placeholder="New password (min 8 chars)" required minlength="8">
+          </div>
+          <div style="display:flex;justify-content:flex-end;">
+            <button type="submit" class="btn btn-secondary override-pw-btn" style="padding:8px 18px;font-size:13px;display:inline-flex;align-items:center;gap:6px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span>Override Password</span>
+            </button>
           </div>
         </form>
 
@@ -421,6 +426,8 @@ function openEditModal(user) {
   document.getElementById('edit_user_id').value = user.user_id;
   document.getElementById('pw_user_id').value = user.user_id;
   document.getElementById('delete_user_id').value = user.user_id;
+  const pwInput = document.getElementById('pw_override_input');
+  if (pwInput) pwInput.value = '';
   
   document.getElementById('edit_full_name').value = user.full_name;
   document.getElementById('edit_email').value = user.email;

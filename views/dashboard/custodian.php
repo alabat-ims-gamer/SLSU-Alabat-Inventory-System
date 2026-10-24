@@ -24,7 +24,7 @@ require __DIR__ . '/../layouts/shell.php';
   <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
     <a href="<?= url('/inventory') ?>" class="btn btn-primary btn-sm">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      + Register New Asset
+      Register New Asset
     </a>
     <a href="<?= url('/scan') ?>" class="btn btn-ghost btn-sm">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M3 15h18M9 3v18M15 3v18"></path></svg>

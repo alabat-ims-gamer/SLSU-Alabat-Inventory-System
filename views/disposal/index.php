@@ -231,7 +231,7 @@ require __DIR__ . '/../layouts/shell.php';
   <div class="disposal-tabs-nav">
     <button type="button" class="disposal-tab-btn active" id="tab-btn-staged" data-tab="staged">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      Staging Queue (For Disposal)
+      For Disposal
       <span class="tab-badge" id="tab-badge-staged"><?= number_format((int)($stats['staged_count'] ?? 0)) ?></span>
     </button>
     <button type="button" class="disposal-tab-btn" id="tab-btn-disposed" data-tab="disposed">
